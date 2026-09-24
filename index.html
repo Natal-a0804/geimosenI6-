@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Овощи и фрукты — занятие для детей 6 лет | Подготовка к школе с Яшей</title>
+<meta name="description" content="Развивающее занятие для детей 6 лет: овощи и фрукты, гласные и согласные буквы, счёт до 8, задачки. Подготовка к школе вместе с папильоном Яшей.">
+<style>
+:root{
+  --cream:#FBF4E4; --cream2:#F0E2C4; --green:#2E7D32;
+  --ink:#1b1b1b; --vowel:#D32F2F; --cons:#0D3C8F; --gold:#F5A623;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%;font-family:'Segoe UI',Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,var(--cream),var(--cream2));color:var(--ink);overflow:hidden}
+#app{height:100%;max-width:1000px;margin:0 auto;position:relative}
+.screen{display:none;height:100%;padding:10px 12px;flex-direction:column;align-items:center;gap:8px}
+.screen.on{display:flex;justify-content:space-evenly}
+h1{font-size:clamp(30px,7vw,50px);color:var(--green);text-align:center;margin:0;font-weight:800}
+#s9 h2, #s10 h2{font-size:clamp(24px,5.4vw,38px)}
+h2{font-size:clamp(32px,7.5vw,52px);color:var(--green);text-align:center;margin:0;font-weight:800;line-height:1.2}
+p{font-size:clamp(26px,6vw,38px);text-align:center;margin:0;line-height:1.35}
+.sub{font-size:clamp(24px,5.4vw,34px);color:#4a4a4a}
+img.hero{max-width:min(72vw,440px);max-height:38vh;object-fit:contain}
+.row{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;width:100%}
+
+/* карточки-предметы: белые, тонкая серая рамка, БЕЗ зелёных овалов */
+.item{background:#fff;border:2px solid #cfcfcf;border-radius:14px;padding:6px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .15s,border-color .15s}
+.item:active{transform:scale(.96)}
+.item img{max-width:100%;max-height:14vh;object-fit:contain;display:block}
+.item.pick{border-color:#2E7D32;background:#F1F8E9;border-width:5px}
+.item.wrong{animation:shake .4s}
+
+/* карточки-слова (отдельно от картинок) */
+.words{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:100%}
+.word{background:#fff;border:2px solid #cfcfcf;border-radius:14px;padding:8px 16px;cursor:pointer;
+  font-size:clamp(17px,3.8vw,24px);font-weight:800;color:var(--ink);letter-spacing:.5px;
+  transition:transform .12s,border-color .15s}
+.word:active{transform:scale(.95)}
+.word .vowel{color:var(--vowel)}
+.word .cons{color:var(--cons)}
+.word.pick{border-color:#2E7D32;background:#F1F8E9}
+.word.wrong{animation:shake .4s}
+
+.btn{background:#fff;border:3px solid var(--green);border-radius:18px;color:var(--green);
+  font-size:clamp(17px,3.8vw,24px);font-weight:800;padding:12px 28px;cursor:pointer;
+  box-shadow:0 4px 0 rgba(46,125,50,.25);transition:transform .12s;font-family:inherit}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(46,125,50,.25)}
+.btn.gold{border-color:var(--gold);color:#8a5a00;box-shadow:0 4px 0 rgba(245,166,35,.3)}
+.btn.big{font-size:clamp(20px,4.8vw,32px);padding:16px 40px}
+.progress{font-size:clamp(22px,4.6vw,32px);color:#6b6b6b;font-weight:700}
+
+/* плавающие буквы — один ряд */
+.sea{position:relative;width:100%;flex:1;min-height:40vh;display:flex;align-items:center;
+  justify-content:center;gap:clamp(4px,1.4vw,12px);flex-wrap:wrap}
+.ltr{position:relative;width:clamp(62px,15vw,96px);height:clamp(62px,15vw,96px);
+  border:3px solid #cfcfcf;border-radius:16px;background:#fff;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:clamp(32px,8vw,52px);font-weight:900;color:var(--ink);
+  animation:float 7s ease-in-out infinite}
+.ltr:active{transform:scale(.93)}
+.ltr.vowel{color:var(--vowel)}
+.ltr.cons{color:var(--cons)}
+.ltr.ok{background:#E8F5E9;border-color:#2E7D32;opacity:.5;animation:none}
+@keyframes float{
+  0%{transform:translate(0,0)}
+  25%{transform:translate(14px,-18px)}
+  50%{transform:translate(-12px,16px)}
+  75%{transform:translate(16px,11px)}
+  100%{transform:translate(0,0)}
+}
+@keyframes float2{
+  0%{transform:translate(0,0)}
+  25%{transform:translate(-16px,14px)}
+  50%{transform:translate(13px,-16px)}
+  75%{transform:translate(-14px,-10px)}
+  100%{transform:translate(0,0)}
+}
+.sea .ltr:nth-child(even){animation-name:float2}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes fly{0%{transform:translateY(-50px) scale(.7);opacity:.2}100%{transform:translateY(0) scale(1);opacity:1}}
+/* поле для собранного слова */
+#slogiWord{background:#fff;border:2px dashed #b9b9b9;border-radius:14px;padding:8px 14px;
+  display:flex;justify-content:center;align-items:center;gap:2px;min-width:60%}
+/* яблоки/морковки внутри корзинки */
+.inbasket{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;min-height:24px;max-width:140px}
+#s9 .item img, #s10 .item img{max-height:11vh}
+#s7 .item img{max-height:14vh}
+#s7 .words{flex-wrap:wrap;gap:6px}
+#s7 .item{padding:3px}
+#s7{justify-content:flex-start;gap:5px}
+.inbasket img{height:26px;width:auto}
+.bignum{font-size:clamp(28px,6.4vw,42px);font-weight:900;color:#2E7D32;display:block;text-align:center;margin-top:4px}
+.faded{opacity:.28}
+/* экран «лови буквы»: крупные буквы, ровные ряды, без пустоты */
+#s4{justify-content:space-evenly;gap:8px;padding-top:8px}
+#s4 .sea{min-height:auto;flex:0 0 auto;gap:12px;padding:10px 0}
+#s4 .ltr{width:clamp(58px,13.5vw,86px);height:clamp(58px,13.5vw,86px);
+  font-size:clamp(30px,7.6vw,50px)}
+#s4 .feedback{min-height:1.1em}
+
+/* задача: текст не раздувается, кнопка внизу экрана */
+#s12{justify-content:flex-start;gap:8px;padding-top:8px}
+#s12 h2{font-size:clamp(26px,5.6vw,40px)}
+#s12 .item img{max-height:12vh}
+#s12 .btn{margin-top:auto;margin-bottom:6px}
+#s12 .word{padding:8px 18px}
+
+/* экраны «разложи предметы» — компактно, чтобы кнопка «Дальше» влезала на телефон */
+#s9, #s10{justify-content:flex-start;gap:6px;padding-top:6px}
+#s9 .row, #s10 .row{gap:6px;margin:0}
+#s9 .item, #s10 .item{padding:4px}
+#s9 .item img, #s10 .item img{max-height:11vh}
+
+/* очень крупные надписи (скороговорка) */
+h2.huge{font-size:clamp(56px,13vw,92px) !important}
+p.huge,.sub.huge{font-size:clamp(44px,10vw,70px) !important}
+/* предметы для перетаскивания — мельче, чтобы всё влезло */
+.item.small img{max-height:12vh}
+.inbasket img{height:22px}
+.item .cap, .card .cap{color:#1b1b1b}
+.item .cap .vowel, .card .cap .vowel, .cap .vowel{color:#D32F2F !important}
+.item .cap .cons, .card .cap .cons, .cap .cons{color:#0D3C8F !important}
+.item .cap, .card .cap{font-size:clamp(26px,5.4vw,38px);font-weight:800;letter-spacing:.5px}
+.feedback{font-size:clamp(28px,5.8vw,40px);font-weight:800;color:var(--green);min-height:1.3em;text-align:center}
+
+video{max-width:100%;max-height:34vh;border-radius:16px;background:#000;display:block}
+video.logo{max-width:min(76vw,440px);max-height:42vh;border-radius:22px;border:4px solid #fff;
+  box-shadow:0 6px 26px rgba(0,0,0,.18)}
+
+/* ряд фигур */
+.rowstrip{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;width:100%}
+.slot{width:clamp(44px,9vw,62px);height:clamp(44px,9vw,62px);border:2px dashed #b9b9b9;border-radius:12px;
+  background:#fff;display:flex;align-items:center;justify-content:center}
+.shape{width:clamp(34px,7vw,48px);height:clamp(34px,7vw,48px);display:block}
+.sq{background:#1976D2;border-radius:5px}
+.tr{width:0;height:0;background:transparent;
+  border-left:clamp(17px,3.5vw,24px) solid transparent;border-right:clamp(17px,3.5vw,24px) solid transparent;
+  border-bottom:clamp(30px,6vw,42px) solid #F9A825}
+.ci{background:#D32F2F;border-radius:50%}
+/* сначала все фигуры одного цвета */
+.sq.one,.ci.one,.tr.one{border-bottom-color:#1976D2}
+.sq.one,.ci.one{background:#1976D2}
+.ans{background:#fff;border:2px solid #cfcfcf;border-radius:14px;padding:8px;cursor:pointer;transition:transform .12s}
+.ans:active{transform:scale(.94)}
+.ans.pick{border-color:#2E7D32;background:#F1F8E9}
+.ans.wrong{animation:shake .4s}
+
+.mom{display:none;background:#FFF8E1;border:3px dashed var(--gold);border-radius:18px;padding:12px 16px;
+  font-size:clamp(15px,3.2vw,20px);text-align:center;max-width:100%}
+.mom.on{display:block}
+.stars{font-size:clamp(32px,8vw,52px)}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- 1. Титул: логотип-видео -->
+  <div class="screen on" id="s0">
+    <h1>Осеннее приключение с Яшей</h1>
+    <p class="sub">Овощи и фрукты</p>
+    <video id="logo" class="logo" src="video/logo_yasha.mp4" poster="images/poster_logo.jpg"
+           autoplay muted loop playsinline preload="auto"></video>
+    <button class="btn big" id="go0" type="button">▶ Начать занятие</button>
+  </div>
+
+  <!-- 2. Главное видео занятия -->
+  <div class="screen" id="s1">
+    <h2>Овощи — фрукты</h2>
+    <video id="vid1" src="video/nachalo.mp4" poster="images/poster_nachalo.jpg"
+           playsinline preload="metadata"></video>
+    <button class="btn" id="go1" type="button">Дальше</button>
+  </div>
+
+  <!-- 3. Сюжет -->
+  <div class="screen" id="s2">
+    <h2>Баловашка разбросал все буквы</h2>
+    <img class="hero" src="images/balovashka.jpg" alt="Баловашка">
+    <p>Помоги собрать только гласные буквы</p>
+    <button class="btn" id="go2" type="button">Помогу!</button>
+  </div>
+
+  <!-- 4. Правило -->
+  <div class="screen" id="s3">
+    <h2>Вспомним правило</h2>
+    <div class="words">
+      <span class="word"><b class="vowel">А</b></span><span class="word"><b class="vowel">О</b></span>
+      <span class="word"><b class="vowel">У</b></span><span class="word"><b class="vowel">И</b></span>
+    </div>
+    <p><b class="vowel">Гласные</b> буквы можно петь: а-а-а, о-о-о</p>
+    <div class="words">
+      <span class="word"><b class="cons">М</b></span><span class="word"><b class="cons">Р</b></span>
+      <span class="word"><b class="cons">К</b></span><span class="word"><b class="cons">Т</b></span>
+    </div>
+    <p><b class="cons">Согласные</b> петь не получается</p>
+    <button class="btn" id="go3" type="button">Понятно</button>
+  </div>
+
+  <!-- 5. Задание 1: лови гласные (буквы плавают) -->
+  <div class="screen" id="s4">
+    <div class="progress">Задание 1 из 9</div>
+    <h2 id="t1head">Лови только гласные буквы</h2>
+    <p class="sub" id="t1sub">Лови гласные</p>
+    <div class="sea" id="sea"></div>
+    <div class="feedback" id="fb4"></div>
+    <button class="btn" id="go4" type="button" style="display:none">Дальше</button>
+  </div>
+
+  <!-- 6. Задание 2: продолжи ряд -->
+  <div class="screen" id="s5">
+    <div class="progress">Задание 2 из 9</div>
+    <h2>Продолжи ряд</h2>
+    <div class="rowstrip" id="strip"></div>
+    <p class="sub">Что поставим дальше?</p>
+    <div class="rowstrip" id="variants"></div>
+    <div class="feedback" id="fb5"></div>
+    <button class="btn" id="go5" type="button" style="display:none">Дальше</button>
+  </div>
+
+  <!-- 7. Скороговорка -->
+  <div class="screen" id="s6">
+    <h2 class="huge">Скороговорка</h2>
+    <video id="vid2" src="video/skorogovorka.mp4" poster="images/poster_skorogovorka.jpg"
+           playsinline preload="metadata"></video>
+    <p class="sub huge">Послушай и повтори 3 раза</p>
+    <button class="btn" id="go6" type="button">Повторил!</button>
+  </div>
+
+  <!-- 8. Задание 3: НАЙДИ ПАРУ (картинка + слово) -->
+  <div class="screen" id="s7">
+    <div class="progress">Задание 3 из 9</div>
+    <h2>Найди пару: слово и картинка</h2>
+    <p class="sub">Нажми слово, потом его картинку</p>
+    <div class="words" id="pairWords"></div>
+    <div class="row" id="pairPics"></div>
+    <div class="feedback" id="fb7"></div>
+    <button class="btn" id="go7" type="button" style="display:none">Дальше</button>
+  </div>
+
+  <!-- 9. Задание 4: НАЙДИ ЛИШНЕЕ (овощи) -->
+  <div class="screen" id="s7b">
+    <div class="progress">Задание 4 из 9</div>
+    <h2>Найди лишнее</h2>
+    <p class="sub">Здесь все овощи. Что лишнее?</p>
+    <div class="row" id="pic7"></div>
+    <div class="feedback" id="fb7b"></div>
+    <button class="btn" id="go7b" type="button" style="display:none">Дальше</button>
+  </div>
+
+  <!-- 9б. Задание 5: НАЙДИ ЛИШНЕЕ (фрукты) -->
+  <div class="screen" id="s8">
+    <div class="progress">Задание 5 из 9</div>
+    <h2>Найди лишнее</h2>
+    <p class="sub">А здесь все фрукты. Что лишнее?</p>
+    <div class="row" id="pic8"></div>
+    <div class="feedback" id="fb8"></div>
+    <button class="btn" id="go8" type="button" style="display:none">Дальше</button>
+  </div>
+
+  <!-- 10. Задание 6: 5 яблок -->
+  <div class="screen" id="s9">
+    <div class="progress">Задание 6 из 9</div>
+    <h2>Разложи 5 яблок в две корзинки</h2>
+    <div class="row">
+      <div class="item" style="cursor:default">
+        <img src="images/korzina.jpg" alt="корзинка">
+        <span class="cap">Корзинка 1</span>
+        <div class="inbasket" id="c1cnt"></div>
+      </div>
+      <div class="item" style="cursor:default">
+        <img src="images/korzina.jpg" alt="корзинка">
+        <span class="cap">Корзинка 2</span>
+        <div class="inbasket" id="c2cnt"></div>
+      </div>
+    </div>
+    <div class="row" id="apples"></div>
+    <div class="feedback" id="fb9"></div>
+    <button class="btn" id="go9" type="button" style="display:none">Дальше</button>
+  </div>
+
+  <!-- 11. Задание 7: 6 морковок -->
+  <div class="screen" id="s10">
+    <div class="progress">Задание 7 из 9</div>
+    <h2>Разложи 6 морковок в два пучка</h2>
+    <div class="row">
+      <div class="item" style="cursor:default">
+        <img src="images/morkov_3sht.jpg" alt="пучок">
+        <span class="cap">Пучок 1</span>
+        <div class="inbasket" id="m1cnt"></div>
+      </div>
+      <div class="item" style="cursor:default">
+        <img src="images/morkov_3sht_2.jpg" alt="пучок">
+        <span class="cap">Пучок 2</span>
+        <div class="inbasket" id="m2cnt"></div>
+      </div>
+    </div>
+    <div class="row" id="morkovi"></div>
+    <div class="feedback" id="fb10"></div>
+    <button class="btn" id="go10" type="button" style="display:none">Дальше</button>
+  </div>
+
+  <!-- 12. Задание 7: слоги -->
+  <div class="screen" id="s11">
+    <div class="progress">Задание 8 из 9</div>
+    <h2>Собери слово из слогов</h2>
+    <div class="row" id="slogiPic"></div>
+    <div class="words" id="slogi"></div>
+    <p class="sub" id="slogiWord" style="font-size:clamp(20px,4.6vw,30px);font-weight:800;min-height:1.4em"></p>
+    <div class="feedback" id="fb11"></div>
+    <button class="btn" id="go11" type="button" style="display:none">Дальше</button>
+  </div>
+
+  <!-- 13. Задачки -->
+  <div class="screen" id="s12">
+    <h2 id="zTitle">Задачка 1</h2>
+    <div class="row" id="zPic"></div>
+    <p id="zText"></p>
+    <div class="row" id="zAns"></div>
+    <div class="feedback" id="fb12"></div>
+    <button class="btn" id="go12" type="button" style="display:none">Дальше</button>
+  </div>
+
+  <!-- 14. Финал -->
+  <div class="screen" id="s13">
+    <h1>Молодец!</h1>
+    <div class="stars">⭐⭐⭐</div>
+    <video id="vid3" src="video/itog.mp4" poster="images/poster_itog.jpg"
+           playsinline preload="metadata"></video>
+    <div class="mom" id="momBox">
+      <b>Маме 💛</b><br>Посмотрите дома, где овощи и какие есть фрукты?
+    </div>
+    <button class="btn gold" id="again" type="button">↺ Ещё раз</button>
+  </div>
+
+</div>
+
+<script>
+// ================= звук =================
+var AUD=[], MOM_ON=true;
+function unlock(){
+  try{var a=new Audio('sounds/t1.mp3');a.volume=0;a.play().then(function(){a.pause()}).catch(function(){})}catch(e){}
+}
+function hush(){ AUD.forEach(function(a){try{a.pause();a.currentTime=0}catch(e){}}); AUD=[]; }
+function say(name,done){
+  try{
+    var a=new Audio('sounds/'+name+'.mp3'); a.volume=1; AUD.push(a);
+    var t=false; function fin(){ if(t)return; t=true; if(done)done(); }
+    a.onended=fin; a.onerror=fin;
+    setTimeout(fin, 12000);
+    a.play().catch(fin);
+  }catch(e){ if(done)done(); }
+}
+var PRAISE=['genialno','tochno2','p_molodec','p_da','p_konechno','p_soglasna','p_aga'];
+var lastPraise='';
+function praise(done){
+  var pool=PRAISE.filter(function(x){return x!==lastPraise;});
+  var pick=pool[Math.floor(Math.random()*pool.length)];
+  lastPraise=pick;
+  say(pick, done);
+}
+
+function q(id){return document.getElementById(id)}
+
+// раскраска букв: гласные красные, согласные тёмно-синие (по чек-листу — везде, где читает ребёнок)
+var VOW='АЕЁИОУЫЭЮЯ';
+function paintLetters(word){
+  var h='';
+  for(var i=0;i<word.length;i++){
+    var c=word.charAt(i);
+    var cls=(VOW.indexOf(c)>=0)?'vowel':'cons';
+    h+='<span class="'+cls+'">'+c+'</span>';
+  }
+  return h;
+}
+
+var ONSHOW={};
+function show(id){
+  hush();
+  var all=document.querySelectorAll('.screen');
+  for(var i=0;i<all.length;i++) all[i].classList.remove('on');
+  q(id).classList.add('on');
+  window.scrollTo(0,0);
+  if(ONSHOW[id]) ONSHOW[id]();
+}
+
+// ================= 1 титул =================
+q('logo').addEventListener('play',function(){hush()});
+q('go0').addEventListener('pointerdown',function(e){e.preventDefault();unlock();show('s1')});
+
+// ================= 2 видео (запускается сразу, без панели) =================
+q('vid1').addEventListener('play',function(){hush()});
+ONSHOW['s1']=function(){ try{ q('vid1').currentTime=0; q('vid1').play().catch(function(){}); }catch(e){} };
+q('vid1').addEventListener('pointerdown',function(e){ e.preventDefault();
+  if(this.paused) this.play().catch(function(){}); else this.pause(); });
+q('go1').addEventListener('pointerdown',function(e){e.preventDefault();hush();show('s2')});
+
+// ================= 3 сюжет =================
+ONSHOW['s2']=function(){ say('s1'); };
+q('go2').addEventListener('pointerdown',function(e){e.preventDefault();show('s3')});
+
+// ================= 4 правило =================
+q('go3').addEventListener('pointerdown',function(e){e.preventDefault();show('s4')});
+
+// ================= 5 задание 1: плавающие буквы (2 этапа) =================
+var seaBox=q('sea');
+var GL=['А','О','У','И','Е','Ы'], SG=['М','Р','К','Т','Н','Л','П','Б'];
+var stage=1, found=0, need=4;
+function fillSea(isVowel){
+  seaBox.innerHTML=''; found=0; need=4;
+  var src=(isVowel?GL:SG).slice(0,6);
+  var items=[];
+  // ловим ИМЕННО те буквы, которые просили
+  for(var i=0;i<need;i++) items.push({ch:src[i],ok:true});
+  for(var j=0;j<4;j++) items.push({ch:(isVowel?SG:GL)[j],ok:false});
+  items.sort(function(){return Math.random()-0.5});
+  var cells=[]; // буквы в один ряд, перемешаны
+  items.sort(function(){return Math.random()-0.5});
+  items.forEach(function(o,idx){
+    var b=document.createElement('button'); b.type='button';
+    b.className='ltr '+((VOW.indexOf(o.ch)>=0)?'vowel':'cons');
+    b.textContent=o.ch;
+    b.style.animationDelay=(idx*0.5)+'s';
+    b.style.animationDuration=(4.5+idx*0.4)+'s';
+    b.addEventListener('pointerdown',function(e){
+      e.preventDefault();
+      if(b.classList.contains('ok'))return;
+      if(o.ok){ b.classList.add('ok'); found++;
+        if(found>=need){
+          if(stage===1){ praise(function(){ setTimeout(function(){ nextStage(); }, 1200); }); }
+          else { praise(function(){ q('fb4').textContent='Все согласные найдены!'; q('go4').style.display=''; }); }
+        }
+      }
+      else{ b.classList.add('wrong'); setTimeout(function(){b.classList.remove('wrong')},450); say('ne_tochno'); }
+    });
+    seaBox.appendChild(b);
+  });
+}
+function nextStage(){
+  stage=2;
+  q('t1head').textContent='А теперь согласные буквы';
+  q('t1sub').textContent='Лови согласные';
+  fillSea(false);
+  say('t2');
+}
+fillSea(true);
+ONSHOW['s4']=function(){ if(stage===1 && found<need) say('t1'); };
+q('go4').addEventListener('pointerdown',function(e){e.preventDefault();show('s5')});
+
+// ================= 6 задание 2: продолжи ряд (3 этапа) =================
+var rowStage=1;
+function buildRow(){
+  var strip=q('strip'), vars=q('variants');
+  strip.innerHTML=''; vars.innerHTML='';
+  var oneColor=false;   // фигуры всегда своих цветов
+  // этап 1 и 2: круг-квадрат; этап 3: круг-треугольник (жёлтый треугольник)
+  var seq, next, order;
+  if(rowStage===3){
+    seq=['ci','tr','ci','tr','ci']; next='tr';
+    order=[{k:'tr'},{k:'ci'}];
+  } else if(rowStage===2){
+    seq=['ci','sq','ci','sq','ci']; next='sq';
+    order=[{k:'sq'},{k:'ci'}];
+  } else {
+    seq=['ci','sq','tr','ci','sq','tr']; next='ci';
+    order=[{k:'ci'},{k:'sq'},{k:'tr'}];
+  }
+  seq.forEach(function(k){
+    var slot=document.createElement('div'); slot.className='slot';
+    slot.innerHTML='<div class="shape '+k+(oneColor?' one':'')+'"></div>';
+    strip.appendChild(slot);
+  });
+  var empty=document.createElement('div'); empty.className='slot'; empty.id='lastSlot';
+  strip.appendChild(empty);
+  order.sort(function(){return Math.random()-0.5});
+  order.forEach(function(o){
+    var d=document.createElement('div'); d.className='ans';
+    d.innerHTML='<div class="shape '+o.k+(oneColor?' one':'')+'"></div>';
+    d.addEventListener('pointerdown',function(e){ e.preventDefault();
+      if(o.k===next){
+        d.classList.add('pick');
+        var st=q('lastSlot');
+        st.innerHTML='<div class="shape '+next+(oneColor?' one':'')+'"></div>';
+        st.style.borderStyle='solid'; st.style.borderColor='#2E7D32';
+        if(rowStage===1){
+          praise(function(){ q('fb5').textContent='Верно! А теперь фигуры станут разного цвета…';
+            setTimeout(function(){ rowStage=2; buildRow(); q('fb5').textContent=''; }, 2500); });
+        } else if(rowStage===2){
+          praise(function(){ q('fb5').textContent='А теперь с жёлтыми треугольниками…';
+            setTimeout(function(){ rowStage=3; buildRow(); q('fb5').textContent=''; }, 2500); });
+        } else {
+          praise(function(){ q('fb5').textContent='Ряд продолжен!'; q('go5').style.display=''; });
+        }
+      } else {
+        d.classList.add('wrong'); setTimeout(function(){d.classList.remove('wrong')},450);
+        q('fb5').textContent='Посмотри, какая фигура идёт следующей';
+      }
+    });
+    vars.appendChild(d);
+  });
+}
+buildRow();
+ONSHOW['s5']=function(){ say('r1'); };
+q('go5').addEventListener('pointerdown',function(e){e.preventDefault();show('s6')});
+
+// ================= 7 скороговорка: сначала видео, потом «повтори три раза» =================
+q('vid2').addEventListener('play',function(){hush()});
+q('vid2').addEventListener('pointerdown',function(e){ e.preventDefault();
+  if(this.paused) this.play().catch(function(){}); else this.pause(); });
+ONSHOW['s6']=function(){
+  var v=q('vid2');
+  v.addEventListener('ended',function once(){ v.removeEventListener('ended',once); say('skor1'); });
+  try{ v.currentTime=0; v.play().catch(function(){ say('skor1'); }); }catch(e){ say('skor1'); }
+  // страховка: если видео не запустилось, аудио всё равно прозвучит
+  setTimeout(function(){ if(v.paused && v.currentTime===0) say('skor1'); }, 9000);
+};
+q('go6').addEventListener('pointerdown',function(e){e.preventDefault();hush();show('s7')});
+
+// ================= 8 задание 3: НАЙДИ ПАРУ (сначала слово, потом картинка) =================
+(function(){
+  var pairs=[
+    {w:'МОРКОВЬ', i:'morkov_2'},
+    {w:'ПОМИДОР', i:'pomidor'},
+    {w:'ОГУРЕЦ',  i:'ogurec_2'},
+    {w:'ЯБЛОКО',  i:'yabloko_kr_1'}
+  ];
+  var picBox=q('pairPics'), wrBox=q('pairWords');
+  var pickedWord=null, done=0, total=pairs.length;
+  var pOrder=pairs.slice().sort(function(){return Math.random()-0.5});
+  var wOrder=pairs.slice().sort(function(){return Math.random()-0.5});
+  // СЛОВА наверху — с них начинаем
+  var wrapW=wrBox, wrapP=picBox;
+  wOrder.forEach(function(p){
+    var d=document.createElement('button'); d.type='button'; d.className='word';
+    d.innerHTML=paintLetters(p.w);
+    d.addEventListener('pointerdown',function(e){ e.preventDefault();
+      if(d.classList.contains('pick'))return;
+      Array.prototype.slice.call(wrapW.children).forEach(function(x){ x.classList.remove('pick'); });
+      d.classList.add('pick'); pickedWord=p.w;
+    });
+    wrapW.appendChild(d);
+  });
+  var wrapP=picBox;
+  pOrder.forEach(function(p){
+    var d=document.createElement('div'); d.className='item';
+    d.innerHTML='<img src="images/'+p.i+'.jpg" alt="">';
+    d.addEventListener('pointerdown',function(e){ e.preventDefault();
+      if(d.classList.contains('pick'))return;
+      if(!pickedWord){ q('fb7').textContent='Сначала выбери слово'; return; }
+      if(p.w===pickedWord){ d.classList.add('pick'); pickedWord=null; done++;
+        Array.prototype.slice.call(wrapW.children).forEach(function(x){ x.classList.remove('pick'); });
+        if(done>=total){ praise(function(){ q('fb7').textContent='Все пары найдены!';
+          q('go7').style.display=''; }); } }
+      else { d.classList.add('wrong'); setTimeout(function(){d.classList.remove('wrong')},450); say('ne_tochno'); }
+    });
+    wrapP.appendChild(d);
+  });
+})();
+ONSHOW['s7']=function(){ say('p1'); };
+q('go7').addEventListener('pointerdown',function(e){e.preventDefault();show('s7b')});
+
+// ================= 9 задание 4: НАЙДИ ЛИШНЕЕ (овощи) =================
+(function(){
+  var pics=[{i:'morkov_2',w:'МОРКОВЬ'},{i:'pomidor',w:'ПОМИДОР'},{i:'ogurec_2',w:'ОГУРЕЦ'},
+            {i:'yabloko_kr_1',w:'ЯБЛОКО',bad:true}];
+  pics.sort(function(){return Math.random()-0.5});
+  var picBox=q('pic7');
+  pics.forEach(function(p){
+    var d=document.createElement('div'); d.className='item';
+    d.innerHTML='<img src="images/'+p.i+'.jpg" alt="">'+'<span class="cap">'+paintLetters(p.w)+'</span>';
+    d.addEventListener('pointerdown',function(e){ e.preventDefault();
+      if(p.bad){ d.classList.add('pick');
+        say('v_yabloko',function(){ q('fb7b').textContent='Верно! Яблоко — это фрукт'; q('go7b').style.display=''; }); }
+      else { d.classList.add('wrong'); setTimeout(function(){d.classList.remove('wrong')},450); say('ne_tochno'); }
+    });
+    picBox.appendChild(d);
+  });
+})();
+ONSHOW['s7b']=function(){ say('l_ovoshchi'); };
+q('go7b').addEventListener('pointerdown',function(e){e.preventDefault();show('s8')});
+
+// ================= 9 задание 4: НАЙДИ ЛИШНЕЕ (фрукты) =================
+(function(){
+  var pics=[{i:'grusha_zh_1',w:'ГРУША'},{i:'banan_1',w:'БАНАН'},{i:'vinograd_1',w:'ВИНОГРАД'},
+            {i:'morkov_3',w:'МОРКОВЬ',bad:true}];
+  pics.sort(function(){return Math.random()-0.5});
+  var picBox=q('pic8');
+  pics.forEach(function(p){
+    var d=document.createElement('div'); d.className='item';
+    d.innerHTML='<img src="images/'+p.i+'.jpg" alt="">'+'<span class="cap">'+paintLetters(p.w)+'</span>';
+    d.addEventListener('pointerdown',function(e){ e.preventDefault();
+      if(p.bad){ d.classList.add('pick');
+        say('v_morkov',function(){ q('fb8').textContent='Верно! Морковь — это овощ'; q('go8').style.display=''; }); }
+      else { d.classList.add('wrong'); setTimeout(function(){d.classList.remove('wrong')},450); say('ne_tochno'); }
+    });
+    picBox.appendChild(d);
+  });
+})();
+ONSHOW['s8']=function(){ say('l_frukty'); };
+q('go8').addEventListener('pointerdown',function(e){e.preventDefault();show('s9')});
+
+// ================= 10 задание 6: 5 яблок (яблоки видны в корзинке, числа внизу) =================
+(function(){
+  var left=5, box=q('apples'), c1=q('c1cnt'), c2=q('c2cnt');
+  var cnt=[0,0];
+  function showExpr(total){
+    var done=(cnt[0]+cnt[1]===5);
+    q('fb9').innerHTML='<span class="bignum">'+cnt[0]+' + '+cnt[1]+(done?' = 5':'')+'</span>';
+  }
+  showExpr();
+  function drawCounts(){
+    c1.innerHTML=new Array(cnt[0]+1).join('<img src="images/yabloko_kr_1.jpg">');
+    c2.innerHTML=new Array(cnt[1]+1).join('<img src="images/yabloko_kr_1.jpg">');
+    q('fb9').innerHTML='<span class="bignum">'+cnt[0]+' + '+cnt[1]+' = 5</span>';
+  }
+  [0,1,2,3,4].forEach(function(){
+    var d=document.createElement('div'); d.className='item small';
+    d.innerHTML='<img src="images/yabloko_kr_1.jpg" alt="яблоко">';
+    d.addEventListener('pointerdown',function(e){ e.preventDefault(); if(d.dataset.used)return;
+      d.dataset.used='1'; d.style.opacity='.3';
+      var i=(cnt[0]<=cnt[1])?0:1; cnt[i]++; drawCounts();
+      left--;
+      if(left===0){ praise(function(){
+        showExpr(); q('go9').style.display=''; }); }
+    });
+    box.appendChild(d);
+  });
+})();
+q('go9').addEventListener('pointerdown',function(e){e.preventDefault();show('s10')});
+
+// ================= 11 задание 7: 6 морковок (в пучке, число внизу) =================
+(function(){
+  var left=6, box=q('morkovi'), m1=q('m1cnt'), m2=q('m2cnt');
+  var cnt=[0,0];
+  function showExpr(){
+    var done=(cnt[0]+cnt[1]===6);
+    q('fb10').innerHTML='<span class="bignum">'+cnt[0]+' + '+cnt[1]+(done?' = 6':'')+'</span>';
+  }
+  showExpr();
+  function drawCounts(){
+    m1.innerHTML=new Array(cnt[0]+1).join('<img src="images/morkov_2.jpg">');
+    m2.innerHTML=new Array(cnt[1]+1).join('<img src="images/morkov_2.jpg">');
+    q('fb10').innerHTML='<span class="bignum">'+cnt[0]+' + '+cnt[1]+' = 6</span>';
+  }
+  [0,1,2,3,4,5].forEach(function(){
+    var d=document.createElement('div'); d.className='item small';
+    d.innerHTML='<img src="images/morkov_2.jpg" alt="морковка">';
+    d.addEventListener('pointerdown',function(e){ e.preventDefault(); if(d.dataset.used)return;
+      d.dataset.used='1'; d.style.opacity='.3';
+      var i=(cnt[0]<=cnt[1])?0:1; cnt[i]++; drawCounts();
+      left--;
+      if(left===0){ praise(function(){
+        showExpr(); q('go10').style.display=''; }); }
+    });
+    box.appendChild(d);
+  });
+})();
+ONSHOW['s10']=function(){ say('c2b'); };
+q('go10').addEventListener('pointerdown',function(e){e.preventDefault();show('s11')});
+
+// ================= 12 задание 7: слоги (3 слова) =================
+var SLOVA=[
+  {parts:['ПО','МИ','ДОР'], word:'ПОМИДОР', img:'pomidor'},
+  {parts:['БА','НАН'],       word:'БАНАН',   img:'banan_1'},
+  {parts:['СЛИ','ВА'],       word:'СЛИВА',   img:'sliva_1'}
+];
+var si=0;
+function drawSlogi(){
+  var s=SLOVA[si], box=q('slogi'), pic=q('slogiPic');
+  box.innerHTML=''; pic.innerHTML=''; q('slogiWord').innerHTML=''; q('fb11').textContent='';
+  q('go11').style.display='none';
+  pic.innerHTML='<div class="item" style="cursor:default"><img src="images/'+s.img+'.jpg" '+
+                'alt="" style="max-height:26vh"></div>';
+  var order=s.parts.map(function(_,i){return i;}).sort(function(){return Math.random()-0.5});
+  var step=0;
+  var field=q('slogiWord');
+  field.className='words'; field.style.minHeight='1.6em';
+  order.forEach(function(i){
+    var b=document.createElement('button'); b.type='button'; b.className='word';
+    b.innerHTML=paintLetters(s.parts[i]);
+    b.addEventListener('pointerdown',function(e){ e.preventDefault();
+      if(b.classList.contains('pick'))return;
+      if(i===step){ b.classList.add('pick'); step++;
+        // слог улетает в поле целого слова
+        var fly=document.createElement('span'); fly.className='word'; fly.style.margin='0';
+        fly.innerHTML=paintLetters(s.parts[i]);
+        fly.style.display='inline-block';
+        fly.style.animation='fly .45s ease-out';
+        field.appendChild(fly);
+        b.style.visibility='hidden';
+        if(step>=s.parts.length){
+          praise(function(){
+            if(si<SLOVA.length-1){ q('fb11').textContent=''; q('go11').style.display='';
+              q('go11').textContent='Следующее слово'; }
+            else { q('fb11').textContent='Все слова собраны!'; q('go11').style.display='';
+              q('go11').textContent='Дальше'; }
+          });
+        }
+      } else { b.classList.add('wrong'); setTimeout(function(){b.classList.remove('wrong')},450); say('ne_tochno'); }
+    });
+    box.appendChild(b);
+  });
+  say('sl1');
+}
+ONSHOW['s11']=function(){ drawSlogi(); };
+q('go11').addEventListener('pointerdown',function(e){ e.preventDefault();
+  if(si<SLOVA.length-1){ si++; drawSlogi(); } else { show('s12'); } });
+
+// ================= 13 задачки =================
+var ZAD=[
+  {t:'Задачка 1', s:'z1', text:'На тарелке 4 красных яблока и 2 зелёных. Сколько всего?',
+   pics:['yabloko_kr_1','yabloko_kr_1','yabloko_kr_1','yabloko_kr_1','yabloko_zel_1','yabloko_zel_1'],
+   ex:'4 + 2 = ?', a:6, hint:'Посчитай все яблоки'},
+  {t:'Задачка 2', s:'z2', text:'В корзине 5 груш и 3 банана. Сколько всего фруктов?',
+   pics:['grusha_zh_1','grusha_zh_1','grusha_zh_1','grusha_zh_1','grusha_zh_1','banan_1','banan_1','banan_1'],
+   ex:'5 + 3 = ?', a:8, hint:'Посчитай все фрукты'},
+  {t:'Задачка 3', s:'z3', text:'Было 6 морковок, зайка съел 2. Сколько осталось?',
+   pics:['morkov_2','morkov_2','morkov_2','morkov_2','morkov_2','morkov_2'], faded:2,
+   ex:'6 − 2 = ?', a:4, hint:'Две бледные — их съели, надо вычесть'}
+];
+var zi=0;
+function drawZ(){
+  hush();                       /* стоп прошлого аудио */
+  var z=ZAD[zi];
+  q('zTitle').textContent=z.t;
+  q('zText').innerHTML='<span style="font-size:clamp(18px,4vw,26px)">'+z.text+'</span><br><b style="font-size:clamp(22px,5vw,32px)">'+z.ex+'</b>';
+  var p=q('zPic'); p.innerHTML='';
+  z.pics.forEach(function(n,idx){
+    var d=document.createElement('div'); d.className='item';
+    d.style.cursor='default';
+    if(z.faded && idx >= z.pics.length - z.faded) d.classList.add('faded');
+    d.innerHTML='<img src="images/'+n+'.jpg" alt="">'; p.appendChild(d); });
+  var a=q('zAns'); a.innerHTML='';
+  q('fb12').textContent=''; q('go12').style.display='none';
+  var opts=[z.a, z.a+1, z.a-1].sort(function(){return Math.random()-0.5});
+  opts.forEach(function(v){
+    var b=document.createElement('button'); b.type='button'; b.className='word'; b.textContent=v;
+    b.addEventListener('pointerdown',function(e){ e.preventDefault();
+      if(v===z.a){ b.classList.add('pick');
+        praise(function(){ q('fb12').textContent='';
+          q('go12').style.display='';
+          q('go12').textContent=(zi<ZAD.length-1)?'Следующая задачка':'Дальше'; }); }
+      else { b.classList.add('wrong'); setTimeout(function(){b.classList.remove('wrong')},450);
+        say('ne_tochno'); q('fb12').textContent=z.hint; }
+    });
+    a.appendChild(b);
+  });
+  say(z.s);
+}
+ONSHOW['s12']=function(){ drawZ(); };
+q('go12').addEventListener('pointerdown',function(e){ e.preventDefault();
+  if(zi<ZAD.length-1){ zi++; drawZ(); } else { show('s13'); } });
+
+// ================= 14 финал =================
+q('vid3').addEventListener('play',function(){hush()});
+q('vid3').addEventListener('pointerdown',function(e){ e.preventDefault();
+  if(this.paused) this.play().catch(function(){}); else this.pause(); });
+ONSHOW['s13']=function(){
+  if(MOM_ON) q('momBox').classList.add('on');
+  // итоговое видео — сразу
+  try{ q('vid3').currentTime=0; q('vid3').play().catch(function(){}); }catch(e){}
+  var v=q('vid3');
+  v.addEventListener('ended',function once(){ v.removeEventListener('ended',once); say('star3'); });
+  setTimeout(function(){ if(v.ended||v.paused) say('star3'); }, 20000);
+};
+q('again').addEventListener('pointerdown',function(e){ e.preventDefault(); location.reload(); });
+
+
+// видео запускается касанием в любом месте экрана (на телефоне автозапуск запрещён)
+['s1','s6','s13'].forEach(function(sid){
+  var scr=q(sid);
+  scr.addEventListener('pointerdown',function(e){
+    var v=scr.querySelector('video');
+    if(!v) return;
+    if(e.target.tagName==='BUTTON') return;   // кнопки «Дальше» не трогаем
+    if(v.paused){ v.play().catch(function(){}); }
+  });
+});
+
+document.addEventListener('pointerdown',function once(){ unlock(); document.removeEventListener('pointerdown',once); });
+</script>
+</body>
+</html>
